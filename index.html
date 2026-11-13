@@ -1792,14 +1792,13 @@
           Group.</div>
       </div>
       <div class="achievement-card reveal tilt"><span class="achievement-icon" aria-hidden="true">🏎</span>
-        <div class="achievement-metric">94%</div>
-        <div class="achievement-title">CPU Classifier — 94% Precision, No Human-in-the-Loop</div>
-        <div class="achievement-desc">At <strong>Leithà</strong>, I developed a binary classifier using a <strong>knowledge
-          distillation</strong> technique, running entirely on CPU with 100ms latency, that achieves <strong>94%
-          Precision on real production data</strong> — precise enough to authorise insurance policy emissions fully
-          automatically, with no human review required. Its decisions also align with Gemini 2.5 Pro on 82% of cases,
-          at a fraction of the inference cost. The same classifier was also implemented as an <strong>ontology-based AI
-          agent</strong>, achieving 93% precision on business tagging.</div>
+        <div class="achievement-metric">82%</div>
+        <div class="achievement-title">Gemini 2.5 Pro Distillation — 30M-Param CPU Classifier</div>
+        <div class="achievement-desc">At <strong>Leithà</strong>, I distilled <strong>Gemini 2.5 Pro</strong> into a
+          lightweight <strong>30M-parameter model</strong> running entirely on CPU with 200ms latency — a binary
+          classifier reaching ~70% precision on real production data and <strong>82% alignment</strong> with Gemini 2.5
+          Pro, at a fraction of the inference cost. As a separate case, the task was later tackled as an
+          <strong>ontology-based AI agent</strong>, achieving 93% precision on business tagging.</div>
       </div>
       <div class="achievement-card reveal tilt"><span class="achievement-icon" aria-hidden="true">🕸️</span>
         <div class="achievement-metric">94%</div>
@@ -1976,10 +1975,10 @@
               <br><br>
               Developed an explanation LLM classifier pipeline with SHAP values, custom fine-tuned model and Gemini.
               <br><br>
-              Developed a CPU-based binary classifier using a knowledge distillation technique (100ms latency)
-              achieving 94% precision at sub-100ms CPU latency, enabling straight-through processing (STP) for
-              straight-pass emissions without manual review. The same classifier was also built as an ontology-based AI
-              agent, achieving 93% precision on business tagging.
+              Developed a CPU-based binary classifier via knowledge distillation of Gemini 2.5 Pro into a
+              30M-parameter model (200ms latency), reaching ~70% precision on real production data with 82% alignment
+              with Gemini at a fraction of the inference cost. As a separate case, later built an ontology-based AI
+              agent for the same classification task, achieving 93% precision on business tagging.
               <br><br>
               Developed a RAG system for customer service department that runs on CPU, based on semantic chunking, and
               agentic AI filtering.
