@@ -149,17 +149,6 @@
       transition: width .1s linear;
     }
 
-    /* ── NEURAL CANVAS ── */
-    #neuralCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      opacity: .55;
-      pointer-events: none;
-    }
-
     /* ── AMBIENT ORBS ── */
     .orb {
       position: absolute;
@@ -391,6 +380,9 @@
     }
 
     .stat-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
       border: 1px solid var(--border);
       padding: 1.5rem;
       background: var(--surface);
@@ -818,9 +810,6 @@
     .pub-list {
       display: flex;
       flex-direction: column;
-      max-height: 500px;
-      overflow-y: auto;
-      padding-right: 1rem;
     }
 
     .pub-item {
@@ -1078,30 +1067,6 @@
         opacity: 1;
         transform: translateY(0);
       }
-    }
-
-    .cursor {
-      position: fixed;
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10000;
-      transform: translate(-50%, -50%);
-      transition: width .3s, height .3s;
-    }
-
-    .cursor-ring {
-      position: fixed;
-      width: 32px;
-      height: 32px;
-      border: 1px solid var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10000;
-      transform: translate(-50%, -50%);
-      transition: transform .18s ease, width .3s, height .3s;
     }
 
     .reveal {
@@ -1485,6 +1450,26 @@
       border-radius: 1px;
     }
 
+    /* ── PROJECTS ── */
+    .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .project-card { border: 1px solid var(--border); background: var(--surface); padding: 2rem; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 1.1rem; transition: transform .35s, border-color .35s; }
+    .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent); transform: scaleX(0); transform-origin: left; transition: transform .5s .2s; }
+    .project-card.visible::before { transform: scaleX(1); }
+    .project-card:hover { transform: translateY(-4px); border-color: var(--dim); }
+    .project-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+    .project-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: .04em; line-height: 1.1; color: var(--white); font-weight: 400; }
+    .project-tag { font-family: 'JetBrains Mono', monospace; font-size: .55rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent2); border: 1px solid var(--dim); padding: .2rem .6rem; white-space: nowrap; }
+    .project-label { font-family: 'JetBrains Mono', monospace; font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; margin-bottom: .3rem; }
+    .project-label.pl-problem { color: var(--accent3); }
+    .project-label.pl-solution { color: var(--accent2); }
+    .project-label.pl-results { color: var(--accent); }
+    .project-text { font-size: .95rem; color: var(--muted); line-height: 1.65; }
+    .project-metrics { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .project-metric { font-family: 'JetBrains Mono', monospace; font-size: .62rem; padding: .3rem .7rem; background: var(--bg); border: 1px solid var(--dim); color: var(--accent); letter-spacing: .05em; }
+    .project-links { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: auto; padding-top: .4rem; }
+    .project-link { font-family: 'JetBrains Mono', monospace; font-size: .55rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent2); border: 1px solid var(--accent2); padding: .25rem .6rem; text-decoration: none; transition: background .25s, color .25s; }
+    .project-link:hover { background: var(--accent2); color: var(--bg); }
+
     @media (max-width: 900px) {
       nav {
         padding: 1.2rem 1.5rem;
@@ -1567,6 +1552,10 @@
         grid-template-columns: 1fr;
       }
 
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
       .edu-grid {
         grid-template-columns: 1fr;
       }
@@ -1586,10 +1575,6 @@
         padding: 1.5rem;
       }
 
-      .cursor,
-      .cursor-ring {
-        display: none;
-      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1606,8 +1591,6 @@
 
 <body>
   <div class="scroll-progress" id="scrollProgress"></div>
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
 
   <nav id="nav">
     <a class="nav-logo" href="#">M·G</a>
@@ -1619,6 +1602,7 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="#about">About</a></li>
       <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#research">Research</a></li>
       <li><a href="#education">Education</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -1626,7 +1610,6 @@
   </nav>
 
   <section class="hero" id="hero">
-    <canvas id="neuralCanvas"></canvas>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
@@ -1654,22 +1637,22 @@
         <div class="hero-photo-tag">Bologna · Italy</div>
       </div>
       <div class="hero-stats" id="heroStats">
-        <div class="stat-card">
+        <a class="stat-card" href="#experience">
           <div class="stat-number" id="yearsInEngineering" data-count="9" data-suffix="+">0+</div>
           <div class="stat-label">Years in engineering</div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a class="stat-card" href="#research">
           <div class="stat-number" id="publicationsInHero" data-count="7" data-suffix="">0</div>
           <div class="stat-label">Published papers</div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a class="stat-card" href="#achievements">
           <div class="stat-number" data-count="96" data-suffix="%">0%</div>
           <div class="stat-label">F1-Score pipeline</div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a class="stat-card" href="#achievements">
           <div class="stat-number" data-count="172" data-suffix="k">0k</div>
           <div class="stat-label">Daily docs processed</div>
-        </div>
+        </a>
       </div>
     </div>
   </section>
@@ -1859,6 +1842,14 @@
           models, Gemini, and SHAP feature attribution.</div>
       </div>
     </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section id="projects">
+    <p class="section-tag reveal">Selected work</p>
+    <h2 class="section-title scramble-in">Projects &amp; case studies.</h2>
+    <div class="projects-grid" id="projectsGrid"></div>
   </section>
 
   <div class="divider"></div>
@@ -2119,6 +2110,81 @@
       }
     ];
 
+    const PROJECTS = [
+      { name: 'LLM Extraction Pipeline · Leithà', tag: 'Production · LLM',
+        problem: 'Underwriting appraisals arrive as unstructured documents at a volume of 172,000+ per day: manual review was unsustainable and generic extraction was not accurate enough for production.',
+        solution: 'Cascaded LLM architecture: a lightweight classifier routes each document to a specialized fine-tuned Qwen 3 8B extraction model, served via vLLM to minimize GPU cost per document.',
+        results: ['96.4% F1-Score', '94% Precision', '172k docs/day', 'vLLM serving'], links: [] },
+      { name: 'Multi-Agent Policy Analysis · Leithà', tag: 'Production · Agentic AI',
+        problem: 'Insurance policies run 20-30 pages; extracting structured data without traceability means unverifiable outputs and no way to audit what came from where.',
+        solution: 'Multi-agent system I led: agents extract structured fields, ground every field to its exact source page(s), and cross-link related information such as the excess tied to a specific insured location.',
+        results: ['94% mean F1 per document', '86% Exact Match', 'Page-level grounding'], links: [] },
+      { name: 'Gemini Distillation to CPU Classifier', tag: 'Production · Efficient AI',
+        problem: 'Binary underwriting decisions required a human in the loop, and running full Gemini 2.5 Pro per request was too expensive to scale.',
+        solution: 'Distilled Gemini 2.5 Pro into a 30M-parameter model running entirely on CPU; later tackled the same task with an ontology-based AI agent for explainability.',
+        results: ['200ms latency', '82% Gemini alignment', '93% precision (ontology agent)', 'CPU-only inference'], links: [] },
+      { name: 'AI Text-Mining for Pricing Revision', tag: 'Production · Business Impact',
+        problem: 'Claims appraisal text contained pricing signals that the existing pricing model for fire and atmospheric guarantees ignored.',
+        solution: 'Built an AI text-mining pipeline over insurance appraisals and fed the findings directly into revised pricing models.',
+        results: ['€500k simulated net profit', 'Pricing model revision'], links: [] },
+      { name: 'Insurance Price Estimation Platform', tag: 'Production · Full-Stack',
+        problem: 'The Unipol Group needed a web application for insurance price estimation capable of serving the whole group portfolio.',
+        solution: 'Co-developed the platform in a cross-functional team of 10; architected Kafka consumers for data enrichment and a mathematical formula parser for the actuarial department.',
+        results: ['€20M+ annual margin', 'Team of 10'], links: [] },
+      { name: 'ServiceNow Multi-Agent Automation', tag: 'Production · Agentic AI',
+        problem: 'An IT ticket automation system existed, but only 2% of users trusted it enough to adopt it.',
+        solution: 'Upgraded the multi-agent system handling ServiceNow tickets, improving routing, answer quality and reliability; adoption keeps growing.',
+        results: ['2% → 25% adoption', 'Still evolving'], links: [] },
+      { name: 'Ontology Data-Linking Agent', tag: 'Production · Neuro-Symbolic',
+        problem: 'Matching customer profiles with the right insurance products required manual, inconsistent reasoning across thousands of product features.',
+        solution: 'Ontology-grounded GenAI data-linking model: an explorative AI agent automatically defines the ontology and suggests products from customer characteristics.',
+        results: ['Agentic ontology', 'Automated product matching'], links: [] },
+      { name: 'CPU RAG for Customer Service', tag: 'Production · RAG',
+        problem: 'Customer service needed answers grounded in internal documentation, without GPU infrastructure or latency spikes.',
+        solution: 'Deployed a CPU-bound RAG system combining semantic chunking with agentic filtering for relevance.',
+        results: ['CPU-only serving', 'Semantic chunking'], links: [] },
+      { name: 'Text-to-SQL for the BI Team', tag: 'Production · NL Interfaces',
+        problem: 'Non-technical stakeholders could not query BI databases without going through the SQL team.',
+        solution: 'Built a Text-to-SQL system that lets end users query the reporting database in natural language to build complex reports.',
+        results: ['NL-powered BI reporting'], links: [] },
+      { name: 'Explainable Classification Pipeline', tag: 'Production · XAI',
+        problem: 'Black-box classifications could not be audited or trusted by business stakeholders.',
+        solution: 'Interpretable pipeline combining a custom fine-tuned classifier, Gemini, and SHAP feature attribution for every prediction.',
+        results: ['SHAP explanations', 'Auditable predictions'], links: [] },
+      { name: 'Gervasio · Personal Multi-Agent Assistant', tag: 'Open Source · Personal',
+        problem: 'Personal workflows like career prep, cooking, memory and scheduling were scattered across apps with no continuity.',
+        solution: 'Open-source Telegram multi-agent assistant built with smolagents + LiteLLM + OpenRouter: specialized sub-agents, Notion persistent memory, voice transcription, Railway deployment.',
+        results: ['7 sub-agents', 'Persistent memory', 'Railway deployment'], links: [] },
+      { name: 'NVdB-Eval · Do LLMs Know Basic Italian?', tag: 'Research · Benchmark',
+        problem: 'No benchmark existed for testing whether LLMs master the core vocabulary of the Italian language.',
+        solution: 'NVdB-Eval: LLMs generate dictionary entries that are judged against the De Mauro Basic Vocabulary; benchmark and code released openly.',
+        results: ['CLiC-it 2026 paper', 'Open-source benchmark'],
+        links: [{ label: 'GitHub ↗', href: 'https://github.com/gozus19p/NVdB-Eval' }, { label: 'Paper ↗', href: 'https://clic2026.unipa.it/wp-content/uploads/2026/09/55_main_long.pdf' }] },
+      { name: 'JENeSyM · Neuro-Symbolic Embeddings in Poincaré Space', tag: 'Research · PhD',
+        problem: 'Neural sentence representations ignore symbolic structure: can ontological pretraining make embeddings more human-aligned?',
+        solution: 'Integrates WordNet with neural embeddings in a 128-dimensional Poincaré manifold (Fréchet means, WSD grounding), evaluated falsification-first on SICK-R with zero-overlap splits.',
+        results: ['r=0.665 Pearson (SICK-R)', 'r=0.401 zero-overlap', 'Under review (Q1 journal)'], links: [] },
+      { name: 'Emotional Influence in Human-LLM Interaction', tag: 'Research · Human-AI',
+        problem: 'Does the emotional framing of a prompt measurably change LLM performance, and do humans and LLMs influence each other emotionally?',
+        solution: 'Controlled experimental framework on SuperGLUE across 5 LLMs, plus bidirectional experiments with affect-conditioned generation.',
+        results: ['+4.5pp with joy vs fear prompts', 'Q2 journal paper', 'CLiC-it 2025 paper'],
+        links: [{ label: 'DOI ↗', href: 'https://doi.org/10.3390/bdcc10040102' }, { label: 'ACL Anthology ↗', href: 'https://aclanthology.org/2025.clicit-1.48.pdf' }] },
+      { name: 'Prompt Strategy Analysis for LLMs', tag: 'Research · Prompt Engineering',
+        problem: 'Is it better to prompt an LLM one task at a time or with many tasks at once, and does the answer depend on the architecture?',
+        solution: 'Systematic comparison of single-task vs multitask prompts across 6 NLP tasks and 6 LLM families, with incremental multitask frameworks.',
+        results: ['2 Q2 journal papers', 'Architecture-dependent degradation'],
+        links: [{ label: 'DOI 2024 ↗', href: 'https://doi.org/10.3390/electronics13234712' }, { label: 'DOI 2025 ↗', href: 'https://doi.org/10.3390/electronics14214349' }] },
+      { name: 'VOICE-FIRST · Real-time Voice Cobot', tag: 'Research · Neuro-Symbolic',
+        problem: 'Help-desk operators needed real-time support during live calls, without context switching.',
+        solution: 'AI cobot that listens to conversations and suggests answers, combining ontology reasoning (Openllet) with deep neural networks for voice understanding. Developed with Prof. Guido Vetere at Isagog.',
+        results: ['<5s average reaction', 'IEEE MetroXRAINE 2023', 'HHAI 2023'],
+        links: [{ label: 'IEEE ↗', href: 'https://ieeexplore.ieee.org/abstract/document/10405568' }, { label: 'IOS Press ↗', href: 'https://ebooks.iospress.nl/volumearticle/63344' }] },
+      { name: 'NoTI-ER · PEPPOL E-Invoicing Platform', tag: 'Engineering · Public Sector',
+        problem: 'Italian Public Administrations needed standardized e-invoicing before PEPPOL adoption existed in Italy.',
+        solution: 'Co-developed the first Italian platform fully compliant with PEPPOL standards, with deep XML/XSLT engineering and on-site compliance work in Belgium.',
+        results: ['~10M documents', '98%+ uptime'], links: [] }
+    ];
+
     /* ═══════════════ RENDERERS ═══════════════ */
     function renderPubs() {
       const list = document.getElementById('pubList');
@@ -2217,8 +2283,66 @@
         root.appendChild(g);
       });
     }
+    function renderProjects() {
+      const grid = document.getElementById('projectsGrid');
+      PROJECTS.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'project-card reveal';
+        const head = document.createElement('div');
+        head.className = 'project-head';
+        const nm = document.createElement('h3');
+        nm.className = 'project-name';
+        nm.textContent = p.name;
+        const tg = document.createElement('span');
+        tg.className = 'project-tag';
+        tg.textContent = p.tag;
+        head.append(nm, tg);
+        card.appendChild(head);
+        [['Problem', 'pl-problem', p.problem, false], ['Solution', 'pl-solution', p.solution, false], ['Results', 'pl-results', null, true]].forEach(b => {
+          const wrap = document.createElement('div');
+          const lbl = document.createElement('div');
+          lbl.className = 'project-label ' + b[1];
+          lbl.textContent = b[0];
+          wrap.appendChild(lbl);
+          if (b[3]) {
+            const met = document.createElement('div');
+            met.className = 'project-metrics';
+            p.results.forEach(m => {
+              const chip = document.createElement('span');
+              chip.className = 'project-metric';
+              chip.textContent = m;
+              met.appendChild(chip);
+            });
+            wrap.appendChild(met);
+          } else {
+            const txt = document.createElement('p');
+            txt.className = 'project-text';
+            txt.textContent = b[2];
+            wrap.appendChild(txt);
+          }
+          card.appendChild(wrap);
+        });
+        if (p.links && p.links.length) {
+          const lr = document.createElement('div');
+          lr.className = 'project-links';
+          p.links.forEach(l => {
+            const a = document.createElement('a');
+            a.className = 'project-link';
+            a.href = l.href;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = l.label;
+            lr.appendChild(a);
+          });
+          card.appendChild(lr);
+        }
+        grid.appendChild(card);
+      });
+    }
+
     renderPubs();
     renderTimeline();
+    renderProjects();
 
     /* ═══════════════ MOBILE NAV ═══════════════ */
     (function () {
@@ -2257,75 +2381,6 @@
     const pubs = PUBS.length;
     const pc = document.getElementById('pubCount'); if (pc) pc.textContent = pubs;
     const ph = document.getElementById('publicationsInHero'); if (ph) ph.dataset.count = pubs;
-
-    /* ═══════════════ NEURAL CANVAS ═══════════════ */
-    (function () {
-      const canvas = document.getElementById('neuralCanvas');
-      const ctx = canvas.getContext('2d');
-      let W, H, particles, mouse = { x: -9999, y: -9999 };
-      const COUNT = 70;
-      function resize() {
-        W = canvas.width = canvas.offsetWidth;
-        H = canvas.height = canvas.offsetHeight;
-      }
-      function init() {
-        particles = Array.from({ length: COUNT }, () => ({
-          x: Math.random() * W, y: Math.random() * H,
-          vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
-          r: Math.random() * 1.6 + .6
-        }));
-      }
-      resize(); init();
-      window.addEventListener('resize', () => { resize(); init(); });
-      const hero = document.getElementById('hero');
-      hero.addEventListener('mousemove', e => {
-        const r = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
-      });
-      hero.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
-
-      function tick() {
-        ctx.clearRect(0, 0, W, H);
-        for (const p of particles) {
-          p.x += p.vx; p.y += p.vy;
-          if (p.x < 0 || p.x > W) p.vx *= -1;
-          if (p.y < 0 || p.y > H) p.vy *= -1;
-          // gentle mouse attraction
-          const dx = mouse.x - p.x, dy = mouse.y - p.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 160 && dist > 0.01) { p.x += dx / dist * .3; p.y += dy / dist * .3; }
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(200,169,110,.7)';
-          ctx.fill();
-        }
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const a = particles[i], b = particles[j];
-            const d = Math.hypot(a.x - b.x, a.y - b.y);
-            if (d < 120) {
-              ctx.beginPath();
-              ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-              ctx.strokeStyle = `rgba(200,169,110,${(1 - d / 120) * .18})`;
-              ctx.lineWidth = .6;
-              ctx.stroke();
-            }
-          }
-          // link to mouse
-          const p = particles[i];
-          const dm = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-          if (dm < 150) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y);
-            ctx.strokeStyle = `rgba(126,200,169,${(1 - dm / 150) * .3})`;
-            ctx.lineWidth = .7;
-            ctx.stroke();
-          }
-        }
-        if (!reducedMotion) requestAnimationFrame(tick);
-      }
-      tick();
-    })();
 
     /* ═══════════════ SCRAMBLE TEXT ═══════════════ */
     const GLYPHS = 'アイウエオ01<>{}[]=+*#$/\\';
@@ -2456,28 +2511,6 @@
     document.querySelectorAll('.reveal, .timeline-item, .pub-item').forEach(el => observer.observe(el));
     document.querySelectorAll('.timeline-item').forEach((el, i) => el.style.transitionDelay = (i * .08) + 's');
     document.querySelectorAll('.pub-item').forEach((el, i) => el.style.transitionDelay = (i * .07) + 's');
-
-    /* ═══════════════ CUSTOM CURSOR ═══════════════ */
-    if (matchMedia('(pointer:fine)').matches) {
-      const cursor = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
-      let mx = 0, my = 0, rx = 0, ry = 0;
-      document.addEventListener('mousemove', e => {
-        mx = e.clientX; my = e.clientY;
-        cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-      });
-      (function animRing() {
-        rx += (mx - rx) * .12; ry += (my - ry) * .12;
-        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-        requestAnimationFrame(animRing);
-      })();
-      document.querySelectorAll('a, button, .achievement-card').forEach(el => {
-        el.addEventListener('mouseenter', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; ring.style.width = '48px'; ring.style.height = '48px'; });
-        el.addEventListener('mouseleave', () => { cursor.style.width = '8px'; cursor.style.height = '8px'; ring.style.width = '32px'; ring.style.height = '32px'; });
-      });
-    } else {
-      document.getElementById('cursor').style.display = 'none';
-      document.getElementById('cursorRing').style.display = 'none';
-    }
 
     /* ═══════════════ CAREER TIMELINE (GANTT) ═══════════════ */
     (function () {
