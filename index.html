@@ -210,6 +210,14 @@
     .ground-surface { background: var(--g-alt); }
     .ground-inverse { background: var(--g-dark); color: var(--ink-dark); }
 
+    .orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .orb { position: absolute; border-radius: 50%; }
+    .o1 { width: 56vmax; height: 56vmax; left: -18vmax; top: -14vmax; background: radial-gradient(circle at 35% 35%, rgba(122, 74, 44, .17), rgba(122, 74, 44, 0) 68%); animation: orb-spin 90s linear infinite; }
+    .o2 { width: 44vmax; height: 44vmax; right: -15vmax; top: 34vh; background: radial-gradient(circle at 62% 38%, rgba(178, 120, 72, .19), rgba(178, 120, 72, 0) 70%); animation: orb-spin 130s linear infinite reverse; }
+    .o3 { width: 50vmax; height: 50vmax; left: 10vw; bottom: -22vmax; background: radial-gradient(circle at 50% 60%, rgba(42, 38, 34, .10), rgba(42, 38, 34, 0) 70%); animation: orb-drift 75s ease-in-out infinite alternate; }
+    @keyframes orb-spin { to { transform: rotate(360deg); } }
+    @keyframes orb-drift { from { transform: translate3d(0, 0, 0) rotate(0deg); } to { transform: translate3d(5vw, -7vh, 0) rotate(45deg); } }
+
     .label { display: block; font-size: var(--t-label); font-weight: 500; color: var(--muted); margin-bottom: var(--s-3); }
     .ground-inverse .label { color: var(--muted-dark); }
     h2 { font-family: var(--disp); font-weight: 400; font-size: var(--t-h2); line-height: 1.08; letter-spacing: -0.025em; color: var(--ink); margin-bottom: var(--s-6); }
@@ -288,9 +296,11 @@
     .about-body em { font-style: italic; }
     .about-body strong { font-weight: 500; }
     .statement { max-width: 20ch; font-size: clamp(40px, 4.6vw, 64px); line-height: 1.05; }
-    .statement .w { transition: color .35s var(--ease); }
-    .statement.pre .w { color: var(--muted); }
-    .statement.pre .w.on { color: var(--ink); }
+    .statement.typing .w { display: inline-block; clip-path: inset(-0.15em 100% -0.15em 0); transition: clip-path .18s linear; }
+    .statement.typing .w.on { clip-path: inset(-0.15em -0.08em -0.15em 0); }
+    .statement .caret { display: none; }
+    .statement.typing .caret { display: inline-block; width: 3px; height: .8em; margin-left: 4px; vertical-align: -0.05em; background: var(--accent); animation: blink 1.05s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
     .focus-stage { height: 210svh; }
     .focus-pin { position: sticky; top: calc(var(--nav) + 48px); }
     @media (max-width: 639px) { .focus-pin { top: calc(var(--nav) + 24px); } }
@@ -328,15 +338,16 @@
     .role-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; margin-bottom: var(--s-3); }
     .role-title { font-size: var(--t-card); font-weight: 500; color: var(--ink); display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; }
     .role-period { font-size: var(--t-label); font-weight: 500; color: var(--muted); white-space: nowrap; }
-    .badge { font-size: var(--t-label); font-weight: 500; color: var(--accent); border: 1px solid var(--line-strong); border-radius: var(--r-sm); padding: 2px 8px; }
-    .badge--muted { color: var(--muted); }
+    .badge { font-size: var(--t-label); font-weight: 500; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--card)); border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent); border-radius: var(--r-sm); padding: 2px 8px; }
+    .badge--muted { color: var(--ink); background: rgba(42, 38, 34, .07); border-color: var(--line-strong); }
     .role-desc { font-size: var(--t-body); line-height: 1.65; color: var(--ink); max-width: 70ch; margin-bottom: var(--s-3); }
     .role-desc p + p { margin-top: var(--s-3); }
 
-    .ach-row { display: grid; grid-template-columns: 200px 1fr; gap: var(--s-6); align-items: start; }
-    .ach-row .stat { font-size: 44px; }
-    .ach-row .card-title { margin-bottom: 6px; }
-    @media (max-width: 639px) { .ach-row { grid-template-columns: 1fr; gap: var(--s-3); } }
+    #achGrid { display: grid; gap: var(--s-4); }
+    #achGrid > .ach-row { display: grid; grid-template-columns: 240px 1fr; gap: var(--s-6); align-items: start; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s-5) var(--s-6); }
+    #achGrid > .ach-row .stat { font-size: clamp(40px, 4.2vw, 60px); color: var(--accent); }
+    #achGrid > .ach-row .card-title { margin-bottom: 6px; }
+    @media (max-width: 639px) { #achGrid > .ach-row { grid-template-columns: 1fr; gap: var(--s-3); } }
 
     .proj-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-4); flex-wrap: wrap; }
     .proj-tag { font-size: var(--t-label); font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 3px 9px; white-space: nowrap; }
@@ -397,13 +408,15 @@
       .m-enter .rv { opacity: 1 !important; transform: none !important; transition: none !important; }
       .m-enter .gantt-bar { transform: none !important; transition: none !important; }
       .m-enter .gantt-today { opacity: .55 !important; transition: none !important; }
+      .orb { animation: none !important; }
       * { transition-duration: .01ms !important; }
     }
   </style>
 </head>
 
 <body>
-<!-- tasteskill 2.5.1 build · kind: service (page-type service, site-kind other). Deal: palette warm-paper-walnut (g-main #f7f3ec, g-alt #ede6da, g-dark #211d19, ink #2a2622, accent walnut #7a4a2c); pairing newsreader (display 400) + Hanken Grotesk (text 400/500); hero split (text span-5, portrait span-6 start-7, 1:1); nav wordmark + About/Experience/Projects/Research/Education + "Email me"; rhythm: one surface band (#achievements), dark close (footer); close-type; buttons solid; radius soft; mark wordmark; moment: word-highlight statement in #focus; motion: hero entrance + pinned hero exit (scale/fade) + pinned word-highlight stage + staggered scroll reveal + gantt grow + stat count-up + hover layer (reduced-motion safe). No shader, ground or loop. -->
+  <div class="orbs" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
+<!-- tasteskill 2.5.1 build · kind: service (page-type service, site-kind other). Deal: palette warm-paper-walnut (g-main #f7f3ec, g-alt #ede6da, g-dark #211d19, ink #2a2622, accent walnut #7a4a2c); pairing newsreader (display 400) + Hanken Grotesk (text 400/500); hero split (text span-5, portrait span-6 start-7, 1:1); nav wordmark + About/Experience/Projects/Research/Education + "Email me"; rhythm: one surface band (#achievements), dark close (footer); close-type; buttons solid; radius soft; mark wordmark; moment: typing statement (caret) in #focus; motion: hero entrance + pinned hero exit (scale/fade) + pinned typing stage + staggered scroll reveal + gantt grow + stat count-up + hover layer (reduced-motion safe); bg: 3 light rotating orbs (fixed). No shader or loop. -->
   <header class="nav">
     <div class="wrap">
       <a class="skip-link" href="#top">Skip to content</a>
@@ -488,7 +501,7 @@
       <div class="focus-stage">
         <div class="wrap focus-pin">
         <span class="label">What I believe</span>
-        <h2 class="statement" id="statement"><span class="w">Research</span> <span class="w">and</span> <span class="w">engineering</span> <span class="w">are</span> <span class="w">not</span> <span class="w">opposites</span> <span class="w">for</span> <span class="w">me</span> <span class="w">—</span> <span class="w">they</span> <span class="w">are</span> <span class="w">the</span> <span class="w">same</span> <span class="w">conversation.</span></h2>
+        <h2 class="statement" id="statement"><span class="w">Research</span> <span class="w">and</span> <span class="w">engineering</span> <span class="w">are</span> <span class="w">not</span> <span class="w">opposites</span> <span class="w">for</span> <span class="w">me</span> <span class="w">—</span> <span class="w">they</span> <span class="w">are</span> <span class="w">the</span> <span class="w">same</span> <span class="w">conversation.</span><span class="caret" aria-hidden="true"></span></h2>
         </div>
       </div>
       <div class="wrap">
@@ -1179,7 +1192,7 @@
       const st = document.getElementById('statement');
       if (!st || reducedMotion) return;
       const words = st.querySelectorAll('.w');
-      st.classList.add('pre');
+      st.classList.add('typing');
       let ticking = false;
       const stage = st.closest('.focus-stage');
       const update = () => {
