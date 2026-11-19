@@ -217,7 +217,8 @@
     h3 { font-family: var(--disp); font-weight: 400; font-size: var(--t-h3); line-height: 1.15; letter-spacing: -0.018em; color: var(--ink); }
     .lead { font-size: var(--t-lead); line-height: 1.5; }
 
-    .hero { height: 100svh; min-height: 100svh; padding: calc(var(--nav) + var(--hgap)) 0 var(--hpadb); }
+    .hero { height: 170svh; }
+    .hero-pin { position: sticky; top: 0; height: 100svh; padding: calc(var(--nav) + var(--hgap)) 0 var(--hpadb); will-change: transform, opacity; }
     .hero-grid { height: 100%; align-items: start; }
     .hero-text { padding-top: var(--s-2); }
     .hero-notice { font-size: var(--t-small); font-weight: 500; color: var(--muted); margin-bottom: var(--s-4); }
@@ -231,8 +232,6 @@
     }
     .frame img { width: 100%; height: 100%; object-fit: cover; }
     @media (max-width: 1023px) {
-      .hero { height: auto; min-height: 100svh; }
-      .hero-grid { height: auto; }
       .hero-media { max-width: 480px; margin-top: var(--s-6); }
     }
 
@@ -292,6 +291,9 @@
     .statement .w { transition: color .35s var(--ease); }
     .statement.pre .w { color: var(--muted); }
     .statement.pre .w.on { color: var(--ink); }
+    .focus-stage { height: 210svh; }
+    .focus-pin { position: sticky; top: calc(var(--nav) + 48px); }
+    @media (max-width: 639px) { .focus-pin { top: calc(var(--nav) + 24px); } }
     .stack-head { margin: var(--s-8) 0 var(--s-5); }
     .stack-block { margin-top: var(--s-8); }
 
@@ -401,7 +403,7 @@
 </head>
 
 <body>
-<!-- tasteskill 2.5.1 build · kind: service (page-type service, site-kind other). Deal: palette warm-paper-walnut (g-main #f7f3ec, g-alt #ede6da, g-dark #211d19, ink #2a2622, accent walnut #7a4a2c); pairing newsreader (display 400) + Hanken Grotesk (text 400/500); hero split (text span-5, portrait span-6 start-7, 1:1); nav wordmark + About/Experience/Projects/Research/Education + "Email me"; rhythm: one surface band (#achievements), dark close (footer); close-type; buttons solid; radius soft; mark wordmark; moment: word-highlight statement in #focus; motion: hero entrance + staggered scroll reveal + gantt bar grow + hover layer (reduced-motion safe). No shader, ground, loop or count. -->
+<!-- tasteskill 2.5.1 build · kind: service (page-type service, site-kind other). Deal: palette warm-paper-walnut (g-main #f7f3ec, g-alt #ede6da, g-dark #211d19, ink #2a2622, accent walnut #7a4a2c); pairing newsreader (display 400) + Hanken Grotesk (text 400/500); hero split (text span-5, portrait span-6 start-7, 1:1); nav wordmark + About/Experience/Projects/Research/Education + "Email me"; rhythm: one surface band (#achievements), dark close (footer); close-type; buttons solid; radius soft; mark wordmark; moment: word-highlight statement in #focus; motion: hero entrance + pinned hero exit (scale/fade) + pinned word-highlight stage + staggered scroll reveal + gantt grow + stat count-up + hover layer (reduced-motion safe). No shader, ground or loop. -->
   <header class="nav">
     <div class="wrap">
       <a class="skip-link" href="#top">Skip to content</a>
@@ -433,6 +435,7 @@
 
   <main id="top">
     <section class="hero" id="hero" data-enter aria-labelledby="hero-h">
+      <div class="hero-pin">
       <div class="wrap grid hero-grid">
         <div class="hero-text span-5">
           <p class="hero-notice e-fade d1">AI engineer · Researcher · PhD candidate — Bologna, Italy</p>
@@ -452,6 +455,7 @@
             <img src="photo.jpg" alt="Portrait of Manuel Gozzi" width="640" height="640" fetchpriority="high" data-source="client" data-subject="Portrait of Manuel Gozzi">
           </figure>
         </div>
+      </div>
       </div>
     </section>
 
@@ -481,9 +485,13 @@
     </section>
 
     <section class="section" id="focus" data-moment="word-highlight" style="--h: 1; --hm: 1">
-      <div class="wrap">
+      <div class="focus-stage">
+        <div class="wrap focus-pin">
         <span class="label">What I believe</span>
         <h2 class="statement" id="statement"><span class="w">Research</span> <span class="w">and</span> <span class="w">engineering</span> <span class="w">are</span> <span class="w">not</span> <span class="w">opposites</span> <span class="w">for</span> <span class="w">me</span> <span class="w">—</span> <span class="w">they</span> <span class="w">are</span> <span class="w">the</span> <span class="w">same</span> <span class="w">conversation.</span></h2>
+        </div>
+      </div>
+      <div class="wrap">
         <div class="stack-block">
           <h3 class="stack-head">The stack I work with.</h3>
           <div class="chips">
@@ -1083,6 +1091,30 @@
     renderProjects(PROJECTS.slice(8), 'workGrid', 'span-4');
     renderGantt();
 
+    function countUp(node) {
+      if (!node || reducedMotion) return;
+      const raw = node.textContent;
+      if (!/\d/.test(raw)) return;
+      const targets = [...raw.matchAll(/(\d+(?:[.,]\d+)?)/g)].map(m => ({
+        i: m.index, len: m[0].length, value: parseFloat(m[0].replace(',', '.')),
+        dec: (m[0].split(/[.,]/)[1] || '').length, sep: m[0].includes(',') ? ',' : '.',
+      }));
+      if (!targets.length) return;
+      const t0 = performance.now(), dur = 1100;
+      const frame = now => {
+        const p = Math.min(1, (now - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        let out = raw;
+        for (let k = targets.length - 1; k >= 0; k--) {
+          const t = targets[k];
+          out = out.slice(0, t.i) + (t.value * e).toFixed(t.dec).replace('.', t.sep) + out.slice(t.i + t.len);
+        }
+        node.textContent = out;
+        if (p < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    }
+
     (function reveal() {
       const sel = '.section > .wrap > *:not(.grid):not(.rows), .split > *, .grid > .card, .rows > .ach-row, .rows > .pub-row, .chips, .close-row, .footer-dir, .legal';
       const nodes = [...document.querySelectorAll(sel)];
@@ -1099,7 +1131,11 @@
       }
       const io = new IntersectionObserver(entries => {
         entries.forEach(e => {
-          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+            if (e.target.matches('.ach-row, .pub-summary')) e.target.querySelectorAll('.stat').forEach(countUp);
+          }
         });
       }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
       nodes.forEach(n => io.observe(n));
@@ -1145,17 +1181,46 @@
       const words = st.querySelectorAll('.w');
       st.classList.add('pre');
       let ticking = false;
+      const stage = st.closest('.focus-stage');
       const update = () => {
         ticking = false;
-        const r = st.getBoundingClientRect();
         const vh = window.innerHeight;
-        const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.3)));
+        let p;
+        if (stage) {
+          const sr = stage.getBoundingClientRect();
+          p = Math.min(1, Math.max(0, -sr.top / Math.max(sr.height - vh, 1)));
+        } else {
+          const r = st.getBoundingClientRect();
+          p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.3)));
+        }
         const n = Math.round(p * words.length);
         words.forEach((w, i) => w.classList.toggle('on', i < n));
       };
       window.addEventListener('scroll', () => {
         if (!ticking) { ticking = true; requestAnimationFrame(update); }
       }, { passive: true });
+      update();
+    })();
+
+    (function heroExit() {
+      const hero = document.getElementById('hero');
+      const pin = hero && hero.querySelector('.hero-pin');
+      if (!pin || reducedMotion) return;
+      const frame = pin.querySelector('.frame');
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const vh = window.innerHeight;
+        const extra = Math.max(hero.offsetHeight - vh, 1);
+        const p = Math.min(1, Math.max(0, window.scrollY / extra));
+        pin.style.transform = 'translateY(' + (-p * vh * 0.1).toFixed(1) + 'px) scale(' + (1 - p * 0.06).toFixed(4) + ')';
+        pin.style.opacity = (1 - p).toFixed(3);
+        if (frame) frame.style.transform = 'scale(' + (1 + p * 0.06).toFixed(4) + ')';
+      };
+      window.addEventListener('scroll', () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      window.addEventListener('resize', update);
       update();
     })();
   </script>
