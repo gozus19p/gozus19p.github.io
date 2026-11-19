@@ -211,10 +211,11 @@
     .ground-inverse { background: var(--g-dark); color: var(--ink-dark); }
 
     .orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .orb-w { position: absolute; inset: 0; will-change: transform; }
     .orb { position: absolute; border-radius: 50%; }
-    .o1 { width: 56vmax; height: 56vmax; left: -18vmax; top: -14vmax; background: radial-gradient(circle at 35% 35%, rgba(122, 74, 44, .17), rgba(122, 74, 44, 0) 68%); animation: orb-spin 90s linear infinite; }
-    .o2 { width: 44vmax; height: 44vmax; right: -15vmax; top: 34vh; background: radial-gradient(circle at 62% 38%, rgba(178, 120, 72, .19), rgba(178, 120, 72, 0) 70%); animation: orb-spin 130s linear infinite reverse; }
-    .o3 { width: 50vmax; height: 50vmax; left: 10vw; bottom: -22vmax; background: radial-gradient(circle at 50% 60%, rgba(42, 38, 34, .10), rgba(42, 38, 34, 0) 70%); animation: orb-drift 75s ease-in-out infinite alternate; }
+    .o1 { width: 56vmax; height: 56vmax; left: -18vmax; top: -14vmax; background: radial-gradient(circle at 35% 35%, rgba(122, 74, 44, .17), rgba(122, 74, 44, 0) 68%); animation: orb-spin 48s linear infinite; }
+    .o2 { width: 44vmax; height: 44vmax; right: -15vmax; top: 34vh; background: radial-gradient(circle at 62% 38%, rgba(178, 120, 72, .19), rgba(178, 120, 72, 0) 70%); animation: orb-spin 65s linear infinite reverse; }
+    .o3 { width: 50vmax; height: 50vmax; left: 10vw; bottom: -22vmax; background: radial-gradient(circle at 50% 60%, rgba(42, 38, 34, .10), rgba(42, 38, 34, 0) 70%); animation: orb-drift 40s ease-in-out infinite alternate; }
     @keyframes orb-spin { to { transform: rotate(360deg); } }
     @keyframes orb-drift { from { transform: translate3d(0, 0, 0) rotate(0deg); } to { transform: translate3d(5vw, -7vh, 0) rotate(45deg); } }
 
@@ -278,7 +279,7 @@
     .stat { font-family: var(--disp); font-weight: 400; font-size: var(--t-stat); line-height: 1; letter-spacing: -0.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
     .chip {
       display: inline-flex; align-items: center; font-size: var(--t-label); font-weight: 500; color: var(--muted);
-      border: 1px solid var(--line); border-radius: var(--r-sm); padding: 5px 11px; background: var(--card);
+      border: 1px solid var(--line); border-radius: var(--r-sm); padding: 5px 11px; background: var(--g-alt);
     }
     .chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
     .rows > * { border-top: 1px solid var(--line); padding: var(--s-5) 0; }
@@ -350,7 +351,7 @@
     @media (max-width: 639px) { #achGrid > .ach-row { grid-template-columns: 1fr; gap: var(--s-3); } }
 
     .proj-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-4); flex-wrap: wrap; }
-    .proj-tag { font-size: var(--t-label); font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 3px 9px; white-space: nowrap; }
+    .proj-tag { font-size: var(--t-label); font-weight: 500; color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--card)); border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent); border-radius: var(--r-sm); padding: 3px 9px; white-space: nowrap; }
     .plabel { font-size: var(--t-label); font-weight: 500; color: var(--muted); margin-bottom: 4px; }
     .proj-links { display: flex; gap: var(--s-4); flex-wrap: wrap; margin-top: auto; padding-top: var(--s-3); }
     .proj-links .link { display: inline-flex; align-items: center; gap: 5px; font-size: var(--t-small); font-weight: 500; }
@@ -415,8 +416,8 @@
 </head>
 
 <body>
-  <div class="orbs" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
-<!-- tasteskill 2.5.1 build · kind: service (page-type service, site-kind other). Deal: palette warm-paper-walnut (g-main #f7f3ec, g-alt #ede6da, g-dark #211d19, ink #2a2622, accent walnut #7a4a2c); pairing newsreader (display 400) + Hanken Grotesk (text 400/500); hero split (text span-5, portrait span-6 start-7, 1:1); nav wordmark + About/Experience/Projects/Research/Education + "Email me"; rhythm: one surface band (#achievements), dark close (footer); close-type; buttons solid; radius soft; mark wordmark; moment: typing statement (caret) in #focus; motion: hero entrance + pinned hero exit (scale/fade) + pinned typing stage + staggered scroll reveal + gantt grow + stat count-up + hover layer (reduced-motion safe); bg: 3 light rotating orbs (fixed). No shader or loop. -->
+  <div class="orbs" aria-hidden="true"><div class="orb-w w1"><i class="orb o1"></i></div><div class="orb-w w2"><i class="orb o2"></i></div><div class="orb-w w3"><i class="orb o3"></i></div></div>
+<!-- tasteskill 2.5.1 build · kind: service (page-type service, site-kind other). Deal: palette warm-paper-walnut (g-main #f7f3ec, g-alt #ede6da, g-dark #211d19, ink #2a2622, accent walnut #7a4a2c); pairing newsreader (display 400) + Hanken Grotesk (text 400/500); hero split (text span-5, portrait span-6 start-7, 1:1); nav wordmark + About/Experience/Projects/Research/Education + "Email me"; rhythm: one surface band (#achievements), dark close (footer); close-type; buttons solid; radius soft; mark wordmark; moment: typing statement (caret) in #focus; motion: hero entrance + pinned hero exit (scale/fade) + pinned typing stage + staggered scroll reveal + gantt grow + stat count-up + hover layer (reduced-motion safe); bg: 3 light orbs (fixed) rotating fast + scroll parallax. No shader or loop. -->
   <header class="nav">
     <div class="wrap">
       <a class="skip-link" href="#top">Skip to content</a>
@@ -1212,6 +1213,25 @@
       window.addEventListener('scroll', () => {
         if (!ticking) { ticking = true; requestAnimationFrame(update); }
       }, { passive: true });
+      update();
+    })();
+
+    (function orbParallax() {
+      if (reducedMotion) return;
+      const ws = [...document.querySelectorAll('.orb-w')];
+      if (!ws.length) return;
+      const ranges = [150, -110, 90];
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const max = Math.max(document.documentElement.scrollHeight - innerHeight, 1);
+        const p = Math.min(1, Math.max(0, window.scrollY / max));
+        ws.forEach((wEl, i) => { wEl.style.transform = 'translate3d(0,' + ((p - 0.5) * ranges[i]).toFixed(1) + 'px,0)'; });
+      };
+      window.addEventListener('scroll', () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      window.addEventListener('resize', update);
       update();
     })();
 
