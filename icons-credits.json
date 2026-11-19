@@ -1,0 +1,25 @@
+{
+  "photo.jpg": { "set": "client", "source": "Manuel Gozzi (own photograph)", "licence": "own work", "trademark": false, "site": "https://gozus19p.github.io/" },
+  "assets/icons/linkedin.svg, github.svg, python.svg, pytorch.svg, google-cloud.svg, aws.svg, mongodb.svg, kafka.svg, kubernetes.svg, terraform.svg": {
+    "set": "logos",
+    "source": "cdn.jsdelivr.net/gh/gilbarbara/logos at commit d6960edc1b73",
+    "licence": "CC0-1.0",
+    "trademark": true,
+    "site": "https://svglogos.dev"
+  },
+  "assets/icons/googlescholar.svg, orcid.svg, researchgate.svg": {
+    "set": "si",
+    "source": "simple-icons 16.30.0, painted in the brand hex",
+    "licence": "CC0-1.0",
+    "trademark": true,
+    "site": "https://simpleicons.org"
+  },
+  "assets/icons/ui-arrow-up-right.svg": {
+    "set": "ui",
+    "source": "lucide-icons/lucide (inlined, takes the text colour)",
+    "licence": "ISC",
+    "trademark": false,
+    "site": "https://lucide.dev"
+  },
+  "note": "Product names and logos are trademarks of their owners."
+}
