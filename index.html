@@ -100,10 +100,10 @@
     .wrap { width: min(100% - 2 * var(--gut), 1280px); margin-inline: auto; }
 
     .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-5); }
-    .span-3 { grid-column: span 3; }
-    .span-4 { grid-column: span 4; }
-    .span-5 { grid-column: span 5; }
-    .span-6 { grid-column: span 6; }
+    .span-3 { grid-column: auto / span 3; }
+    .span-4 { grid-column: auto / span 4; }
+    .span-5 { grid-column: auto / span 5; }
+    .span-6 { grid-column: auto / span 6; }
     .span-12 { grid-column: 1 / -1; }
     .start-7 { grid-column-start: 7; }
     @media (max-width: 1279px) { .g4 > .span-3 { grid-column: span 6; } }
@@ -276,12 +276,12 @@
     .about-body p:last-child { margin-bottom: 0; }
     .about-body em { font-style: italic; }
     .about-body strong { font-weight: 500; }
-    .statement { max-width: 22ch; }
+    .statement { max-width: 20ch; font-size: clamp(40px, 4.6vw, 64px); line-height: 1.05; }
     .statement .w { transition: color .35s var(--ease); }
     .statement.pre .w { color: var(--muted); }
     .statement.pre .w.on { color: var(--ink); }
-    .stack-head { margin: var(--s-7) 0 var(--s-4); }
-    .stack-block { margin-top: var(--s-6); }
+    .stack-head { margin: var(--s-8) 0 var(--s-5); }
+    .stack-block { margin-top: var(--s-8); }
 
     .gantt { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: var(--s-6); margin-bottom: var(--s-7); }
     .gantt-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-4); flex-wrap: wrap; margin-bottom: var(--s-5); }
@@ -319,7 +319,10 @@
     .role-desc { font-size: var(--t-body); line-height: 1.65; color: var(--ink); max-width: 70ch; margin-bottom: var(--s-3); }
     .role-desc p + p { margin-top: var(--s-3); }
 
-    .ach-card .card-title { margin-top: var(--s-1); }
+    .ach-row { display: grid; grid-template-columns: 200px 1fr; gap: var(--s-6); align-items: start; }
+    .ach-row .stat { font-size: 44px; }
+    .ach-row .card-title { margin-bottom: 6px; }
+    @media (max-width: 639px) { .ach-row { grid-template-columns: 1fr; gap: var(--s-3); } }
 
     .proj-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-4); flex-wrap: wrap; }
     .proj-tag { font-size: var(--t-label); font-weight: 500; color: var(--muted); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 3px 9px; white-space: nowrap; }
@@ -437,7 +440,7 @@
       </div>
     </section>
 
-    <section class="section" id="about" style="--h: 1; --hm: 2">
+    <section class="section" id="about" style="--h: 1; --hm: 1">
       <div class="wrap grid split">
         <div class="span-5">
           <span class="label">Who I am</span>
@@ -462,7 +465,7 @@
       </div>
     </section>
 
-    <section class="section" id="focus" data-moment="word-highlight" style="--h: 1; --hm: 3">
+    <section class="section" id="focus" data-moment="word-highlight" style="--h: 1; --hm: 1">
       <div class="wrap">
         <span class="label">What I believe</span>
         <h2 class="statement" id="statement"><span class="w">Research</span> <span class="w">and</span> <span class="w">engineering</span> <span class="w">are</span> <span class="w">not</span> <span class="w">opposites</span> <span class="w">for</span> <span class="w">me</span> <span class="w">—</span> <span class="w">they</span> <span class="w">are</span> <span class="w">the</span> <span class="w">same</span> <span class="w">conversation.</span></h2>
@@ -489,7 +492,7 @@
       </div>
     </section>
 
-    <section class="section" id="experience" style="--h: 2; --hm: 6">
+    <section class="section" id="experience" style="--h: 1; --hm: 1">
       <div class="wrap">
         <span class="label">Career</span>
         <h2>Where I've built things.</h2>
@@ -510,7 +513,7 @@
       </div>
     </section>
 
-    <section class="section" id="history" style="--h: 2; --hm: 5">
+    <section class="section" id="history" style="--h: 1; --hm: 1">
       <div class="wrap">
         <span class="label">Earlier stops</span>
         <h2>Earlier roles.</h2>
@@ -518,42 +521,29 @@
       </div>
     </section>
 
-    <section class="section ground-surface" id="achievements" style="--h: 2; --hm: 7">
+    <section class="section ground-surface" id="achievements" style="--h: 1; --hm: 1">
       <div class="wrap">
         <span class="label">Impact</span>
         <h2>Results I've delivered.</h2>
-        <div class="grid g4" id="achGrid">
-          <article class="card m-nolift ach-card"><p class="stat">172k+</p><h3 class="card-title">Documents processed daily</h3>
-            <p class="card-text">At <strong>Leithà | Unipol Group</strong>, I designed and deployed a cascaded LLM architecture that processes over 172,000 insurance documents every day in production — reliably and at scale.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">96.4%</p><h3 class="card-title">F1-score on extraction</h3>
-            <p class="card-text">By fine-tuning Qwen 3 8B on domain-specific data at <strong>Leithà</strong>, I achieved 94% precision and a 96.4% F1-score on structured extraction from complex insurance documents.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">€500k</p><h3 class="card-title">Simulated net profit</h3>
-            <p class="card-text">At <strong>Leithà</strong>, an AI text-mining pipeline I built to analyse insurance appraisals led to pricing model revisions that generated a simulated net gain of €500k on fire and atmospheric guarantees.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">10M+</p><h3 class="card-title">Documents — 98% uptime</h3>
-            <p class="card-text">At <strong>Engineering SpA</strong>, I helped build NoTI-ER — the first Italian platform fully compliant with PEPPOL — processing ~10 million e-invoicing documents for public administrations with over 98% uptime.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">€20M+</p><h3 class="card-title">Annual margin generated</h3>
-            <p class="card-text">As part of a 10-person team at <strong>Leithà</strong>, I co-developed an insurance price estimation platform that now generates an annual margin exceeding €20 million for the Unipol Group.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">82%</p><h3 class="card-title">Gemini 2.5 Pro distillation — 30M-parameter CPU classifier</h3>
-            <p class="card-text">At <strong>Leithà</strong>, I distilled <strong>Gemini 2.5 Pro</strong> into a lightweight <strong>30M-parameter model</strong> running entirely on CPU with 200ms latency — a binary classifier reaching ~70% precision on real production data and <strong>82% alignment</strong> with Gemini 2.5 Pro, at a fraction of the inference cost.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">93%</p><h3 class="card-title">Ontology-based AI agent — business tagging</h3>
-            <p class="card-text">As a separate case, I later tackled the same classification task as an <strong>ontology-based AI agent</strong>, reaching <strong>93% precision on business tagging</strong> — combining a domain ontology with agentic reasoning for more accurate and explainable categorisation.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">94%</p><h3 class="card-title">Multi-agent policy analysis — 94% mean F1</h3>
-            <p class="card-text">At <strong>Leithà</strong>, I led the development of a multi-agent system for deep insurance policy analysis. It extracts structured data, grounds every field to its exact source page(s) in the document, and cross-links related information. Achieves a <strong>mean F1 of 94% per document</strong> across 20–30 page insurance policies.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">2% → 25%</p><h3 class="card-title">ServiceNow adoption boost</h3>
-            <p class="card-text">Upgraded a multi-agent automation system for ServiceNow IT tickets, driving user adoption from 2% to 25%.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">Text-to-SQL</p><h3 class="card-title">BI NL-query interface</h3>
-            <p class="card-text">Built a natural language interface for BeRebel's BI team, enabling non-technical users to query database reports directly.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">Agentic</p><h3 class="card-title">Ontology data-linking</h3>
-            <p class="card-text">Engineered an explorative AI agent that dynamically builds ontologies to match customer profiles with tailored insurance products.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">CPU RAG</p><h3 class="card-title">Agentic knowledge base</h3>
-            <p class="card-text">Deployed a low-latency CPU-bound RAG system for customer service, using semantic chunking and agentic filtering.</p></article>
-          <article class="card m-nolift ach-card"><p class="stat">XAI</p><h3 class="card-title">Explainable classifier</h3>
-            <p class="card-text">Designed an interpretable classification pipeline combining custom fine-tuned models, Gemini, and SHAP feature attribution.</p></article>
+        <div class="rows" id="achGrid">
+          <div class="ach-row"><p class="stat">172k+</p><div><h3 class="card-title">Documents processed daily</h3><p class="card-text">At <strong>Leithà | Unipol Group</strong>, I designed and deployed a cascaded LLM architecture that processes over 172,000 insurance documents every day in production — reliably and at scale.</p></div></div>
+          <div class="ach-row"><p class="stat">96.4%</p><div><h3 class="card-title">F1-score on extraction</h3><p class="card-text">By fine-tuning Qwen 3 8B on domain-specific data at <strong>Leithà</strong>, I achieved 94% precision and a 96.4% F1-score on structured extraction from complex insurance documents.</p></div></div>
+          <div class="ach-row"><p class="stat">€500k</p><div><h3 class="card-title">Simulated net profit</h3><p class="card-text">At <strong>Leithà</strong>, an AI text-mining pipeline I built to analyse insurance appraisals led to pricing model revisions that generated a simulated net gain of €500k on fire and atmospheric guarantees.</p></div></div>
+          <div class="ach-row"><p class="stat">10M+</p><div><h3 class="card-title">Documents — 98% uptime</h3><p class="card-text">At <strong>Engineering SpA</strong>, I helped build NoTI-ER — the first Italian platform fully compliant with PEPPOL — processing ~10 million e-invoicing documents for public administrations with over 98% uptime.</p></div></div>
+          <div class="ach-row"><p class="stat">€20M+</p><div><h3 class="card-title">Annual margin generated</h3><p class="card-text">As part of a 10-person team at <strong>Leithà</strong>, I co-developed an insurance price estimation platform that now generates an annual margin exceeding €20 million for the Unipol Group.</p></div></div>
+          <div class="ach-row"><p class="stat">82%</p><div><h3 class="card-title">Gemini 2.5 Pro distillation — 30M-parameter CPU classifier</h3><p class="card-text">At <strong>Leithà</strong>, I distilled <strong>Gemini 2.5 Pro</strong> into a lightweight <strong>30M-parameter model</strong> running entirely on CPU with 200ms latency — a binary classifier reaching ~70% precision on real production data and <strong>82% alignment</strong> with Gemini 2.5 Pro, at a fraction of the inference cost.</p></div></div>
+          <div class="ach-row"><p class="stat">93%</p><div><h3 class="card-title">Ontology-based AI agent — business tagging</h3><p class="card-text">As a separate case, I later tackled the same classification task as an <strong>ontology-based AI agent</strong>, reaching <strong>93% precision on business tagging</strong> — combining a domain ontology with agentic reasoning for more accurate and explainable categorisation.</p></div></div>
+          <div class="ach-row"><p class="stat">94%</p><div><h3 class="card-title">Multi-agent policy analysis — 94% mean F1</h3><p class="card-text">At <strong>Leithà</strong>, I led the development of a multi-agent system for deep insurance policy analysis. It extracts structured data, grounds every field to its exact source page(s) in the document, and cross-links related information. Achieves a <strong>mean F1 of 94% per document</strong> across 20–30 page insurance policies.</p></div></div>
+          <div class="ach-row"><p class="stat">2% → 25%</p><div><h3 class="card-title">ServiceNow adoption boost</h3><p class="card-text">Upgraded a multi-agent automation system for ServiceNow IT tickets, driving user adoption from 2% to 25%.</p></div></div>
+          <div class="ach-row"><p class="stat">Text-to-SQL</p><div><h3 class="card-title">BI NL-query interface</h3><p class="card-text">Built a natural language interface for BeRebel's BI team, enabling non-technical users to query database reports directly.</p></div></div>
+          <div class="ach-row"><p class="stat">Agentic</p><div><h3 class="card-title">Ontology data-linking</h3><p class="card-text">Engineered an explorative AI agent that dynamically builds ontologies to match customer profiles with tailored insurance products.</p></div></div>
+          <div class="ach-row"><p class="stat">CPU RAG</p><div><h3 class="card-title">Agentic knowledge base</h3><p class="card-text">Deployed a low-latency CPU-bound RAG system for customer service, using semantic chunking and agentic filtering.</p></div></div>
+          <div class="ach-row"><p class="stat">XAI</p><div><h3 class="card-title">Explainable classifier</h3><p class="card-text">Designed an interpretable classification pipeline combining custom fine-tuned models, Gemini, and SHAP feature attribution.</p></div></div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="projects" style="--h: 2; --hm: 8">
+    <section class="section" id="projects" style="--h: 1; --hm: 1">
       <div class="wrap">
         <span class="label">Selected work</span>
         <h2>Projects &amp; case studies.</h2>
@@ -561,7 +551,7 @@
       </div>
     </section>
 
-    <section class="section" id="work" style="--h: 2; --hm: 8">
+    <section class="section" id="work" style="--h: 1; --hm: 1">
       <div class="wrap">
         <span class="label">Research &amp; open source</span>
         <h2>Open-source &amp; research projects.</h2>
@@ -569,7 +559,7 @@
       </div>
     </section>
 
-    <section class="section" id="research" style="--h: 2; --hm: 7">
+    <section class="section" id="research" style="--h: 1; --hm: 1">
       <div class="wrap">
         <span class="label">Academia</span>
         <h2>Research &amp; Publications.</h2>
@@ -581,22 +571,22 @@
         <div id="education" style="margin-top: var(--s-8);">
           <h3 style="margin-bottom: var(--s-5);">Education.</h3>
           <div class="grid g4" id="eduGrid">
-            <article class="card m-nolift edu-card">
+            <article class="card m-nolift edu-card span-3">
               <p class="edu-degree">PhD — Physical &amp; Engineering Sciences for AI, Innovation and Sustainability</p>
               <p class="edu-school">Università degli Studi "Guglielmo Marconi"</p>
               <p class="edu-year">Nov 2025 — present</p> <span class="badge">Current</span>
             </article>
-            <article class="card m-nolift edu-card">
+            <article class="card m-nolift edu-card span-3">
               <p class="edu-degree">MSc — Computer Engineering, Digital Transformation &amp; Data Science</p>
               <p class="edu-school">Università degli Studi "Guglielmo Marconi"</p>
               <p class="edu-year">Aug 2023 — May 2025</p>
             </article>
-            <article class="card m-nolift edu-card">
+            <article class="card m-nolift edu-card span-3">
               <p class="edu-degree">BSc — Computer Engineering</p>
               <p class="edu-school">Università degli Studi "Guglielmo Marconi"</p>
               <p class="edu-year">Mar 2019 — Mar 2022</p>
             </article>
-            <article class="card m-nolift edu-card">
+            <article class="card m-nolift edu-card span-3">
               <p class="edu-degree">Diploma — Business Information Systems</p>
               <p class="edu-school">I.T.C. Pier Crescenzi, Bologna</p>
               <p class="edu-year">2011 — 2016</p>
@@ -607,7 +597,7 @@
     </section>
   </main>
 
-  <footer class="closing ground-inverse" id="contact" style="--h: 1; --hm: 2">
+  <footer class="closing ground-inverse" id="contact" style="--h: 1; --hm: 1">
     <div class="wrap">
       <div class="close-row">
         <span class="label">Let's talk</span>
@@ -972,7 +962,7 @@
     function renderHistory() {
       const grid = document.getElementById('historyGrid');
       CAREER.slice(1).filter(c => c.roles).forEach(group => {
-        const card = el('article', 'card m-nolift');
+        const card = el('article', 'card m-nolift span-4');
         const co = el('div', 'company');
         co.appendChild(el('h3', 'card-title', group.company));
         co.appendChild(el('span', 'company-span', group.span));
@@ -982,10 +972,10 @@
       });
     }
 
-    function renderProjects(list, gridId) {
+    function renderProjects(list, gridId, spanCls) {
       const grid = document.getElementById(gridId);
       list.forEach(p => {
-        const card = el('article', 'card m-nolift');
+        const card = el('article', 'card m-nolift ' + spanCls);
         const head = el('div', 'proj-head');
         head.appendChild(el('h3', 'card-title', p.name));
         head.appendChild(el('span', 'proj-tag', p.tag));
@@ -1073,8 +1063,8 @@
     renderPubs();
     renderCurrent();
     renderHistory();
-    renderProjects(PROJECTS.slice(0, 8), 'projectsGrid');
-    renderProjects(PROJECTS.slice(8), 'workGrid');
+    renderProjects(PROJECTS.slice(0, 8), 'projectsGrid', 'span-6');
+    renderProjects(PROJECTS.slice(8), 'workGrid', 'span-4');
     renderGantt();
 
     (function menu() {
