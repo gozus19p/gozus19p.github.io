@@ -55,7 +55,7 @@
   <style>
     :root {
       --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
-      --nav: 72px; --padt: 120px; --padb: 72px; --gut: 80px; --hgap: 48px; --hpadb: 64px; --bar: 0px;
+      --nav: 72px; --padt: 96px; --padb: 64px; --gut: 80px; --hgap: 48px; --hpadb: 64px; --bar: 0px;
       --g-main: #f7f3ec; --g-alt: #ede6da; --g-dark: #211d19; --card: #fffdf9;
       --ink: #2a2622; --muted: #665e55; --line: rgba(42, 38, 34, .14); --line-strong: rgba(42, 38, 34, .32);
       --accent: #7a4a2c; --accent-ink: #ffffff;
@@ -71,14 +71,15 @@
 
     @media (max-width: 639px) {
       :root {
-        --nav: 56px; --padt: 96px; --padb: 48px; --gut: 24px; --hgap: 24px; --hpadb: 24px;
+        --nav: 56px; --padt: 80px; --padb: 48px; --gut: 24px; --hgap: 24px; --hpadb: 24px;
         --t-h1: 38px; --t-h2: 30px; --t-h3: 24px; --t-lead: 18px; --t-stat: 28px;
       }
     }
 
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
-    html { scroll-padding-top: 0; scroll-behavior: auto; }
+    html { scroll-padding-top: 0; }
+    @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
     body {
       background: var(--g-main);
       color: var(--ink);
@@ -205,14 +206,13 @@
     .link:hover::after, .link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
     .ic-glyph { width: 14px; height: 14px; flex: none; }
 
-    .section { min-height: calc(var(--h, 1) * 100svh); padding: var(--padt) 0 calc(var(--padb) + var(--bar)); }
-    @media (max-width: 639px) { .section { min-height: calc(var(--hm, var(--h, 1)) * 100lvh); } }
+    .section { padding: var(--padt) 0 calc(var(--padb) + var(--bar)); }
     .ground-surface { background: var(--g-alt); }
     .ground-inverse { background: var(--g-dark); color: var(--ink-dark); }
 
     .label { display: block; font-size: var(--t-label); font-weight: 500; color: var(--muted); margin-bottom: var(--s-3); }
     .ground-inverse .label { color: var(--muted-dark); }
-    h2 { font-family: var(--disp); font-weight: 400; font-size: var(--t-h2); line-height: 1.08; letter-spacing: -0.025em; color: var(--ink); margin-bottom: var(--s-7); }
+    h2 { font-family: var(--disp); font-weight: 400; font-size: var(--t-h2); line-height: 1.08; letter-spacing: -0.025em; color: var(--ink); margin-bottom: var(--s-6); }
     .ground-inverse h2 { color: var(--ink-dark); }
     h3 { font-family: var(--disp); font-weight: 400; font-size: var(--t-h3); line-height: 1.15; letter-spacing: -0.018em; color: var(--ink); }
     .lead { font-size: var(--t-lead); line-height: 1.5; }
@@ -249,10 +249,22 @@
     @keyframes fade-up { to { opacity: 1; transform: translateY(0); } }
     @keyframes settle { from { transform: scale(1.05); } to { transform: scale(1); } }
 
+    .m-enter .rv { opacity: 0; transform: translateY(16px); transition: opacity .55s var(--ease), transform .55s var(--ease); transition-delay: var(--d, 0ms); }
+    .m-enter .rv.in { opacity: 1; transform: none; }
+    .m-enter .gantt-bar { transform: scaleX(0); transform-origin: left center; transition: opacity var(--m-in) var(--ease), transform 1s var(--ease-enter) var(--d, 0ms); }
+    .m-enter .gantt.in .gantt-bar { transform: scaleX(1); }
+    .m-enter .gantt-today { opacity: 0; transition: opacity .6s ease .7s; }
+    .m-enter .gantt.in .gantt-today { opacity: .55; }
+    .frame img { transition: transform .8s var(--ease); }
+    .hero-media:hover .frame img { transform: scale(1.025); }
+
     .card {
       background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg);
       padding: var(--s-6); display: flex; flex-direction: column; gap: var(--s-3);
+      transition: transform 180ms var(--ease), border-color 180ms var(--ease), box-shadow 180ms var(--ease);
     }
+    .card:hover { border-color: var(--line-strong); }
+    .card.lift:hover, .card.lift:focus-within { transform: translateY(-2px); box-shadow: 0 14px 30px -22px rgba(42, 38, 34, .45); }
     .card-title { font-family: var(--text); font-weight: 500; font-size: var(--t-card); line-height: 1.3; color: var(--ink); }
     .card-text { font-size: var(--t-body); line-height: 1.55; color: var(--ink); }
     .card-text strong { font-weight: 500; }
@@ -380,13 +392,16 @@
 
     @media (prefers-reduced-motion: reduce) {
       .m-enter [data-enter] .e-line > span, .m-enter [data-enter] .e-fade, .m-enter [data-enter] .hero-media { animation: none !important; transform: none !important; opacity: 1 !important; }
+      .m-enter .rv { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .m-enter .gantt-bar { transform: none !important; transition: none !important; }
+      .m-enter .gantt-today { opacity: .55 !important; transition: none !important; }
       * { transition-duration: .01ms !important; }
     }
   </style>
 </head>
 
 <body>
-<!-- tasteskill 2.5.1 build · kind: service (page-type service, site-kind other). Deal: palette warm-paper-walnut (g-main #f7f3ec, g-alt #ede6da, g-dark #211d19, ink #2a2622, accent walnut #7a4a2c); pairing newsreader (display 400) + Hanken Grotesk (text 400/500); hero split (text span-5, portrait span-6 start-7, 1:1); nav wordmark + About/Experience/Projects/Research/Education + "Email me"; rhythm: one surface band (#achievements), dark close (footer); close-type; buttons solid; radius soft; mark wordmark; moment: word-highlight statement in #focus; motion: hero entrance + hover layer only. No shader, ground, loop, count or scroll reveal (site-kind other). -->
+<!-- tasteskill 2.5.1 build · kind: service (page-type service, site-kind other). Deal: palette warm-paper-walnut (g-main #f7f3ec, g-alt #ede6da, g-dark #211d19, ink #2a2622, accent walnut #7a4a2c); pairing newsreader (display 400) + Hanken Grotesk (text 400/500); hero split (text span-5, portrait span-6 start-7, 1:1); nav wordmark + About/Experience/Projects/Research/Education + "Email me"; rhythm: one surface band (#achievements), dark close (footer); close-type; buttons solid; radius soft; mark wordmark; moment: word-highlight statement in #focus; motion: hero entrance + staggered scroll reveal + gantt bar grow + hover layer (reduced-motion safe). No shader, ground, loop or count. -->
   <header class="nav">
     <div class="wrap">
       <a class="skip-link" href="#top">Skip to content</a>
@@ -975,7 +990,7 @@
     function renderProjects(list, gridId, spanCls) {
       const grid = document.getElementById(gridId);
       list.forEach(p => {
-        const card = el('article', 'card m-nolift ' + spanCls);
+        const card = el('article', 'card lift ' + spanCls);
         const head = el('div', 'proj-head');
         head.appendChild(el('h3', 'card-title', p.name));
         head.appendChild(el('span', 'proj-tag', p.tag));
@@ -1050,6 +1065,7 @@
         lanes.appendChild(row);
       });
 
+      lanes.querySelectorAll('.gantt-bar').forEach((b, i) => b.style.setProperty('--d', Math.min(i * 70, 630) + 'ms'));
       const today = el('div', 'gantt-today');
       const reposition = () => {
         const labelW = lanes.querySelector('.gantt-label') ? lanes.querySelector('.gantt-label').getBoundingClientRect().width : 132;
@@ -1066,6 +1082,28 @@
     renderProjects(PROJECTS.slice(0, 8), 'projectsGrid', 'span-6');
     renderProjects(PROJECTS.slice(8), 'workGrid', 'span-4');
     renderGantt();
+
+    (function reveal() {
+      const sel = '.section > .wrap > *:not(.grid):not(.rows), .split > *, .grid > .card, .rows > .ach-row, .rows > .pub-row, .chips, .close-row, .footer-dir, .legal';
+      const nodes = [...document.querySelectorAll(sel)];
+      const seen = new Map();
+      nodes.forEach(n => {
+        n.classList.add('rv');
+        const i = seen.get(n.parentElement) || 0;
+        seen.set(n.parentElement, i + 1);
+        n.style.setProperty('--d', Math.min(i, 7) * 60 + 'ms');
+      });
+      if (reducedMotion || !('IntersectionObserver' in window)) {
+        nodes.forEach(n => n.classList.add('in'));
+        return;
+      }
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+      nodes.forEach(n => io.observe(n));
+    })();
 
     (function menu() {
       const btn = document.getElementById('navToggle');
